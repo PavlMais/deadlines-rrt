@@ -3,3 +3,12 @@
   
   margin: 100px auto;
 }
+
+.container{
+  width: 900px;
+  margin: auto;
+}
+
+body{
+  background-color: #394B59;
+}

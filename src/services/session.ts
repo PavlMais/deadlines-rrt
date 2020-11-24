@@ -1,11 +1,7 @@
 import { AnyAction } from 'redux';
 import { Dispatch } from "react";
-
-import {
-  loginRequest,
-  loginSuccess,
-  loginFailure,
-} from "../store/session/actions";
+import { push } from 'connected-react-router'
+import * as action from "../store/session/actions";
 import { setApiToken } from "../api";
 import api from "../api";
 
@@ -15,7 +11,7 @@ export default class Session {
     dispatch: Dispatch<AnyAction>
   ) => {
     console.log('Login request: ', email, password)
-    dispatch(loginRequest(email));
+    dispatch(action.loginRequest(email));
 
     api
       .post("login", {
@@ -25,12 +21,46 @@ export default class Session {
       .then((response) => {
         const token = response.data.token;
         setApiToken(token);
-        dispatch(loginSuccess(token));
+        dispatch(action.loginSuccess(token));
+        dispatch(push('/deadlines'))
       })
       .catch((error) => {
-        dispatch(loginFailure(error.response.data.error));
+        console.log(error);
+        
+        dispatch(action.loginFailure(error.response.data.error));
       });
   };
+
+  static register = (email: string, password: string) => (
+    dispatch: Dispatch<AnyAction>
+   ) => {
+    dispatch(action.registerRequest(email))
+
+    api.post('register',{email, password})
+       .then((res) => {
+         const token = res.data.token
+         setApiToken(token)
+         dispatch(action.registerSuccess(token))
+         dispatch(push('/deadlines'))
+        
+       })
+       .catch((err) => {
+         dispatch(action.registerFailure(err.response.data.error))
+       })
+  }
+
+  static logout = () => (dispatch: Dispatch<AnyAction>) => {
+    api.post('logout')
+       .then((res) => {
+        setApiToken('')
+        dispatch(action.logout())
+        dispatch(push('/'))
+       
+      })
+      .catch((err) => {
+        dispatch(action.registerFailure(err.response.data.error))
+      })
+  }
   
 
 }

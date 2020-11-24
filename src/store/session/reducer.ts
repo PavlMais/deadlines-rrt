@@ -1,12 +1,15 @@
 import * as actionTypes from './actions'
 
 
-const token = localStorage.getItem('user')
+const token = localStorage.getItem('jwt-token')
+
+console.log('Restored token: ', token);
+
 
 const initialState: SessionState = { 
     loading: false,
     isLogined: token ? true : false,
-    token: token && JSON.parse(token),
+    token: token || '',
     email: '',
     loginError: ''
 };
@@ -18,7 +21,7 @@ const reducer = (state = initialState, action: SessionActions): SessionState  =>
     switch (action.type) {
         case actionTypes.LOGIN_REQUEST:
             return {
-                isLogined: true,
+                isLogined: false,
                 token: '',
                 email: action.email,
                 loading: true,
@@ -43,10 +46,38 @@ const reducer = (state = initialState, action: SessionActions): SessionState  =>
                 loading: false,
                 loginError: action.error
             };
+
+        case actionTypes.REGISTER_REQUEST:
+            return {
+                isLogined: false,
+                token: '',
+                email: action.email,
+                loading: true,
+                loginError: ''
+
+            }
+    
+        case actionTypes.REGISTER_SUCCESS:
+            return { 
+                isLogined: true,
+                token: action.token,
+                email: state.email,
+                loading: false,
+                loginError: ''
+
+            };
+        case actionTypes.REGISTER_FAILURE:
+            return { 
+                isLogined: false,
+                token: '',
+                email: '',
+                loading: false,
+                loginError: action.error
+            };
  
         case actionTypes.LOGOUT_SESSION:
             return { 
-                isLogined: true,
+                isLogined: false,
                 token: '',
                 email: '',
                 loading: false,
