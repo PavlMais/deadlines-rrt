@@ -1,34 +1,10 @@
 import { Button, FormGroup, H1, InputGroup, Intent, Card, Icon, Tooltip } from '@blueprintjs/core';
-import React, { Dispatch, useState } from 'react';
-import { useForm, ValidateResult, ValidationRules } from 'react-hook-form'
-import { connect } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form'
 import { Link } from 'react-router-dom';
-
-import Session from '../../services/session'
-import { RootState } from '../../store';
-
-
-const emailValidatpr: ValidationRules = {
-    required: 'Email required',
-    pattern: {
-        value: /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
-        message: 'Email is invalid'
-    }
-}
-
-const passwordValidator: ValidationRules = {
-    required: 'Password is reuired'
-}
-
-interface P {
-    session: SessionState
-}
-interface A {
-    dispatch: Dispatch<any>
-}
-
-type Props = P & A
-
+import usePromise from '../../utils/usePromise';
+import { login } from './api'
+import { passwordValidator, emailValidatpr } from '../../utils/validators'
 
 
 type Inputs = {
@@ -36,35 +12,38 @@ type Inputs = {
     password: string
 }
 
+const LoginPage: React.FC = () => {
+    const [ showPassword, setShowPassword] = useState(false)
+    const { register, handleSubmit, errors, setError, clearErrors } = useForm<Inputs>()
+    const { call, error, loading } = usePromise(login)
 
-const LoginPage: React.FC<Props> = (props: Props) => {
-    const [showPassword, setShowPassword] = useState(false)
-    const { register, handleSubmit, errors, formState } = useForm<Inputs>()
 
-    const onSumbit = (data: Inputs) => {
-        props.dispatch(Session.login(data.email, data.password))
-    }
+    const onSumbit = (data: Inputs) => call(data.email, data.password)
+    
 
-    if (props.session.loginError)
-        formState.errors.email = {
-            message: props.session.loginError,
-            type: 'server-error'
+    useEffect(() => {
+        if (error) {
+            error.invalidParams.forEach((err: any) => {
+                setError(err.field, { type: 'server', message: err.reason })
+            })
+        } else {
+            clearErrors()
         }
+    }, [clearErrors, error])
 
-        const lockButton = (
-            <Tooltip content={`${showPassword ? "Hide" : "Show"} Password`}>
-                <Button 
-                    icon={showPassword ? "eye-open" : "eye-off"}
-                    minimal={true}
-                    onClick={() => setShowPassword(!showPassword)}
-                />
-            </Tooltip>
-        );
 
+    const lockButton = (
+        <Tooltip content={`${showPassword ? "Hide" : "Show"} Password`}>
+            <Button
+                icon={showPassword ? "eye-open" : "eye-off"}
+                minimal={true}
+                onClick={() => setShowPassword(!showPassword)}
+            />
+        </Tooltip>
+    );
 
     return <>
         <Card className="bp3-dark">
-
             <H1>Login </H1>
             <form onSubmit={handleSubmit(onSumbit)}>
 
@@ -91,15 +70,14 @@ const LoginPage: React.FC<Props> = (props: Props) => {
 
                 </FormGroup>
 
-                <Button type='submit' text='Login' loading={props.session.loading} />
+                <Button type='submit' text='Login' loading={loading} />
                 OR
-                <Link to='/register'><Button text='Register' disabled={props.session.loading} /></Link>
+                <Link to='/register'><Button text='Register' disabled={loading} /></Link>
             </form>
         </Card>
     </>
 }
 
-const mapState = (state: RootState): P => ({ session: state.session, })
-const mapD = (dispatch: Dispatch<any>): A => ({ dispatch });
+export default LoginPage;
 
-export default connect(mapState, mapD)(LoginPage);
+

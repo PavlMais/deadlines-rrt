@@ -15,13 +15,11 @@ import '@blueprintjs/datetime/lib/css/blueprint-datetime.css'
 
 
 ReactDOM.render(
-  <React.StrictMode>
     <Provider store={store}>
       <ConnectedRouter history={history}>
         <App />
       </ConnectedRouter>
-    </Provider>
-  </React.StrictMode>,
+    </Provider>,
   document.getElementById('root')
 );
 

@@ -4,7 +4,8 @@ import { Alignment, Navbar, Button, Position, Tooltip } from '@blueprintjs/core'
 import { connect } from 'react-redux'
 import { RootState } from '../../store'
 import { Link } from 'react-router-dom'
-import Session from '../../services/session'
+import { logout } from '../../services/session'
+import { SessionState } from '../../store/session/types'
 
 interface P {
 
@@ -27,7 +28,7 @@ const Nav: React.FC<Props> = (props: Props) => {
         if (props.session.isLogined)
             return (
                 <Tooltip content={props.session.email} position={Position.RIGHT}>
-                    <Button minimal={true} icon={"user"} onClick={() => props.dispatch(Session.logout())} />
+                    <Button minimal={true} icon={"user"} onClick={() => props.dispatch(logout())} />
                 </Tooltip>
     
             )

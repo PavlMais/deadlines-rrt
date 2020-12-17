@@ -1,3 +1,16 @@
-.p2{
-    padding: 20px;
+
+.header{
+    margin: 40px;
+    border: 2px solid red;
+}
+
+.header-title{
+    /* float: left; */
+}
+
+.add-deadline-btn{
+    /* float: right; */
+
+    margin-left: 80%;
+    
 }

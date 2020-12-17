@@ -5,6 +5,7 @@ import Nav from './components/Nav/';
 import './App.css'
 import { RootState } from './store';
 import { connect } from 'react-redux';
+import { SessionState } from './store/session/types'
 
 const HomePage = React.lazy(() => import('./components/Home'))
 const LoginPage = React.lazy(() => import('./components/Login/'))
@@ -14,11 +15,17 @@ const DeadlinePage = React.lazy(() => import('./components/Deadline/'))
 const NotExistPage = React.lazy(() => import('./components/NotExist/'))
 
 
-const App = (session: SessionState) => {
+interface P {
+  session: SessionState
+}
+interface A {
+  dispatch: Dispatch<any>
+}
 
-  console.log(session.isLogined);
-    
+type Props = P & A
 
+
+const App: React.FC<Props> = (props: Props) => {
   return (
     <Suspense fallback={<p>Loading...</p>}>
       <div className='bp3-dark'>
@@ -27,15 +34,15 @@ const App = (session: SessionState) => {
         <div className='mbox'>
 
           <Switch>
-            <Route exact path='/' render={() => <HomePage/>}/>
+            <Route exact path='/' render={() => <HomePage />} />
             <Route exact path='/login' render={() => <LoginPage />} />
-            <Route exact path='/register' render={() => <RegisterPage/>}/>
-            
-            <PrivateRoute exact path='/deadline/:id' component={DeadlinePage} isLoggedIn={session.isLogined}/>
-            <PrivateRoute exact path='/deadlines' component={DeadlinesPage} isLoggedIn={session.isLogined}/>
+            <Route exact path='/register' render={() => <RegisterPage />} />
 
-            <Route exact render={() => <NotExistPage/>}/>
-            
+            <PrivateRoute exact path='/deadline/:id' component={DeadlinePage} isLoggedIn={props.session.isLogined} />
+            <PrivateRoute exact path='/deadlines' component={DeadlinesPage} isLoggedIn={props.session.isLogined} />
+
+            <Route exact render={() => <NotExistPage />} />
+
           </Switch>
         </div>
       </div>
@@ -43,6 +50,7 @@ const App = (session: SessionState) => {
   );
 }
 
-const mapProps = (state: RootState) => state.session
+const mapState = (state: RootState): P => ({ session: state.session, })
+const mapD = (dispatch: Dispatch<any>): A => ({ dispatch });
 
-export default connect(mapProps)(App);
+export default connect(mapState, mapD)(App);

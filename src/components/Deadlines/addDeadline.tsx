@@ -8,17 +8,16 @@ import './styles.css'
 
 
 
-
 const AddDeadlineModal = () => {
     const { register, errors } = useForm()
-
+    
     return (
         <Dialog
             className={'bp3-dark'}
             title="Add new deadline"
             icon='add-to-artifact'
             usePortal={true}
-            isOpen={true}
+            isOpen={false}
         >
             <form className="p2">
 

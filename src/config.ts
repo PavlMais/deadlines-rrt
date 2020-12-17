@@ -1,1 +1,1 @@
-export const serverUrl = 'https://reqres.in/api'
+export const serverUrl = 'https://localhost:5001/api/'   

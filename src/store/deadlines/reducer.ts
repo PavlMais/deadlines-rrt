@@ -1,7 +1,9 @@
-import { ADD_DEADLINE, DELETE_DEADLINE } from './actions';
+import { act } from 'react-dom/test-utils';
+import * as types from  './types';
 
 
-const initialState: DeadlineState = {
+const initialState: types.DeadlineState = {
+    isLoading: false,
     deadlines:[
         {
             id: 1,
@@ -10,20 +12,23 @@ const initialState: DeadlineState = {
     ]
 }
 
-const reducer = (state = initialState, action: DeadlineActions): DeadlineState  => {
-    switch (action.type) {
-        case ADD_DEADLINE:
-            return {
-                ...state,
-                deadlines: state.deadlines.concat({
-                    id: 3,
-                    title: action.title
-                })
-            }
+const reducer = (state = initialState, action: types.DeadlineActions): types.DeadlineState  => {
+    // switch (action.type) {
+    //     case types.ADD_DEADLINE:
+    //         return {
+    //             deadlines: state.deadlines.concat({
+    //                 id: 3,
+    //                 title: action.title
+    //             })
+    //         }
+    //     case types.LOAD_DEADLINES:
+    //         return {
+    //             deadlines: action.deadlines
+    //         }
             
-        case DELETE_DEADLINE:
-            return state;
-        }
+    //     case types.DELETE_DEADLINE:
+    //         return state;
+    //     }
     return state;
 }
 

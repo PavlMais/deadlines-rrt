@@ -16,5 +16,6 @@ export default axios.create({
   baseURL: serverUrl,
   headers: {
     "Content-Type": "application/json",
+    "access-control-allow-origin": "*"
   },
 });
