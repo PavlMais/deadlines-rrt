@@ -1,6 +1,5 @@
 import { useState } from 'react' 
 
-
 export enum RequestStatus {WAIT_CALL="WAIT_CALL", LOADING="LOADING", FAILURE="FAILURE", SUCCESS="SUCCESS"}
 
 interface UsePromInfo<TData, TError> {
@@ -8,12 +7,6 @@ interface UsePromInfo<TData, TError> {
     data: TData | undefined
     error: TError | undefined
 }
-
-
-
-
-
-
 
 function usePromise<T extends any[], TP, TData, TError>(func: (...args: T) => {
     promise: Promise<TP>
@@ -25,7 +18,6 @@ function usePromise<T extends any[], TP, TData, TError>(func: (...args: T) => {
         data: undefined,
         error: undefined
     }) 
-    
 
     var loading = info.status === RequestStatus.LOADING
 
@@ -52,10 +44,7 @@ function usePromise<T extends any[], TP, TData, TError>(func: (...args: T) => {
             })
         })
     }
-
-
     return { call, status: info.status, data: info.data, error: info.error, loading }
 }
-
 
 export default usePromise;
